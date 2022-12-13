@@ -1,0 +1,38 @@
+body {
+    min-width: 100%;
+    display: block;
+}
+
+.row {
+    min-width: 100%;
+    display: flex;
+}
+
+.column {
+    flex: 1;
+}
+
+#data_chart_container {
+    background-color: brown;
+    min-width: 60%;
+}
+
+#user_input {
+    background-color: yellow;
+    min-width: 40%;
+}
+
+h1 {
+    text-align: center;
+}
+
+input {
+    min-width: 100%;
+    display: block;
+}
+
+button {
+    min-width: 100%;
+    display: block;
+    background-color: yellow;
+}
