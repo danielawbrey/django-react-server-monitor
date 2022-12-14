@@ -2,39 +2,40 @@ let input_counter = 1;
 
 window.onload = function() {
   let container = document.getElementById('chart');
-  draw_chart(container);
+  drawChart(container);
 };
 
-function add_form_elements() {
-  create_label("Website");
-  create_input("website_address");
+function addFormElements() {
+  createLabel("Website");
+  createInput("website_address");
 
-  create_label("Port");
-  create_input("website_port");
+  createLabel("Port");
+  createInput("website_port");
 
-  create_line_graph()
+  createLineGraph()
 }
 
-function create_label(label_text) {
+function createLabel(label_text) {
   let container = document.getElementById('website_form');
   let web_address_label = document.createElement("label");
   web_address_label.innerHTML = label_text;
   container.append(web_address_label);
 }
 
-function create_input(input_type) {
+function createInput(input_type) {
   let container = document.getElementById('website_form');
   let web_address_input = document.createElement("input");
   web_address_input.setAttribute("type", "text");
   container.append(web_address_input);
 }
 
-function start_test() {
-  let user_input_arr = get_user_input();
-  console.log(parse_user_input(user_input_arr));
+function startTest() {
+  let user_input_arr = getUserInput();
+  console.log(parseUserInput(user_input_arr));
+  httpGetAsync();
 }
 
-function get_user_input() {
+function getUserInput() {
   let user_input = [];
   let container = document.getElementById('website_form');
   for (let i = 0; i < container.length; i++) {
@@ -43,7 +44,7 @@ function get_user_input() {
   return user_input;
 }
 
-function parse_user_input(user_input_arr) {
+function parseUserInput(user_input_arr) {
   let parsed_input_arr = [], webpage_details_subarr = [];
   for (let i = 0; i < user_input_arr.length; i++) {
     webpage_details_subarr.push(user_input_arr[i]);
@@ -55,7 +56,14 @@ function parse_user_input(user_input_arr) {
   return parsed_input_arr;
 }
 
-function draw_chart(container) {
+function httpGetAsync(theUrl, callback) {
+  let xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("GET", "http://127.0.0.1:8002", false); // false for synchronous request
+  xmlHttp.send(null);
+  return xmlHttp.responseText;
+}
+
+function drawChart(container) {
   container.height = 60;
   new Chart(container, {
     type: 'line',
@@ -78,7 +86,7 @@ function draw_chart(container) {
     });
 }
 
-function create_line_graph() {
+function createLineGraph() {
   let container = document.getElementById('data_chart_container');
 
   let chart_div = document.createElement("div");
@@ -87,5 +95,5 @@ function create_line_graph() {
   let chart_canvas = document.createElement("canvas");
   chart_div.append(chart_canvas);
 
-  draw_chart(chart_canvas);
+  drawChart(chart_canvas);
 }
