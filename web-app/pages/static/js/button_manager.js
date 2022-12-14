@@ -1,5 +1,3 @@
-let input_counter = 1;
-
 window.onload = function() {
   let container = document.getElementById('chart');
   drawChart(container);
@@ -58,7 +56,12 @@ function parseUserInput(user_input_arr) {
 
 function httpGetAsync(theUrl, callback) {
   let xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("GET", "http://127.0.0.1:8002", false); // false for synchronous request
+  xmlHttp.onreadystatechange = function() {
+    if (xmlHttp.readyState == XMLHttpRequest.DONE) {
+        alert(xmlHttp.status);
+    }
+  }
+  xmlHttp.open("GET", "http://127.0.0.1:8002", false);
   xmlHttp.send(null);
   return xmlHttp.responseText;
 }
