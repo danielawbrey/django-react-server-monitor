@@ -38,3 +38,9 @@ button {
   min-width: 100%;
   display: block;
 }
+
+#data_chart_container label {
+  display: block;
+  width: 33%;
+  float: left;
+}

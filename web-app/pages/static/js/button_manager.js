@@ -1,60 +1,67 @@
-window.onload = function() {
-  let container = document.getElementById('chart');
-  drawChart(container);
-};
+// window.onload = function() {
+//   createLabel("Website");
+//   let container = document.getElementById('chart');
+//   drawChart(container);
+//   // addGraphDeleteButton();
+// };
 
 function addFormElements() {
+  // createLabel("Website");
+  // createInput();
+
+  // createLabel("Port");
+  // createInput();
+
   createLabel("Website");
-  createInput("website_address");
-
-  createLabel("Port");
-  createInput("website_port");
-
-  createLineGraph()
+  createLabel("Uptime");
+  createLabel("Metering");
+  createLineGraph();
+  addGraphDeleteButton();
+  // createLabel("Website");
 }
 
-function createLabel(label_text) {
-  let container = document.getElementById('website_form');
-  let web_address_label = document.createElement("label");
-  web_address_label.innerHTML = label_text;
-  container.append(web_address_label);
+function createLabel(labelText) {
+  let container = document.getElementById('data_chart_container');
+  let webAddressLabel = document.createElement("label");
+  webAddressLabel.innerHTML = labelText;
+  container.append(webAddressLabel);
 }
 
-function createInput(input_type) {
-  let container = document.getElementById('website_form');
-  let web_address_input = document.createElement("input");
-  web_address_input.setAttribute("type", "text");
-  container.append(web_address_input);
-}
+// function createInput() {
+//   let container = document.getElementById('website_form');
+//   let webAddressInput = document.createElement("input");
+//   webAddressInput.setAttribute("type", "text");
+//   container.append(webAddressInput);
+// }
 
 function startTest() {
-  let user_input_arr = getUserInput();
-  console.log(parseUserInput(user_input_arr));
+  let userInputArr = getUserInput();
+  console.log(parseUserInput(userInputArr));
   httpGetAsync();
 }
 
 function getUserInput() {
-  let user_input = [];
+  let userInput = [];
   let container = document.getElementById('website_form');
   for (let i = 0; i < container.length; i++) {
-    user_input.push(container.elements[i].value)
+    userInput.push(container.elements[i].value)
   }
-  return user_input;
+  return userInput;
 }
 
-function parseUserInput(user_input_arr) {
-  let parsed_input_arr = [], webpage_details_subarr = [];
-  for (let i = 0; i < user_input_arr.length; i++) {
-    webpage_details_subarr.push(user_input_arr[i]);
-    if(webpage_details_subarr.length % 2 == 0) {
-      parsed_input_arr.push(webpage_details_subarr);
-      webpage_details_subarr = [];
+function parseUserInput(userInputArr) {
+  let parsedInputArr = [], webpageDetailsSubarr = [];
+  for (let i = 0; i < userInputArr.length; i++) {
+    webpageDetailsSubarr.push(userInputArr[i]);
+    if(webpageDetailsSubarr.length % 2 == 0) {
+      parsedInputArr.push(webpageDetailsSubarr);
+      webpageDetailsSubarr = [];
     }
   }
-  return parsed_input_arr;
+  return parsedInputArr;
 }
 
-function httpGetAsync(theUrl, callback) {
+function httpGetAsync() {
   let xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function() {
     if (xmlHttp.readyState == XMLHttpRequest.DONE) {
@@ -67,7 +74,7 @@ function httpGetAsync(theUrl, callback) {
 }
 
 function drawChart(container) {
-  container.height = 60;
+  container.height = 50;
   new Chart(container, {
     type: 'line',
     data: {
@@ -81,22 +88,40 @@ function drawChart(container) {
       ]
     },
     options: {
-      title: {
-        display: true,
-        text: 'World population per region (in millions)'
+      scales: {
+        yAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'HTTP Status'
+          }
+        }],
+        xAxes: [{
+          scaleLabel: {
+            display: true,
+            labelString: 'Time (ms)'
+          }
+        }]
       }
     }
     });
 }
 
+function addGraphDeleteButton() {
+  let container = document.getElementById('data_chart_container');
+
+  let deleteButton = document.createElement("button");
+  deleteButton.textContent = "Remove";
+  container.append(deleteButton);
+}
+
 function createLineGraph() {
   let container = document.getElementById('data_chart_container');
 
-  let chart_div = document.createElement("div");
-  container.append(chart_div);
+  let chartDiv = document.createElement("div");
+  container.append(chartDiv);
 
-  let chart_canvas = document.createElement("canvas");
-  chart_div.append(chart_canvas);
+  let chartCanvas = document.createElement("canvas");
+  chartDiv.append(chartCanvas);
 
-  drawChart(chart_canvas);
+  drawChart(chartCanvas);
 }
