@@ -1,38 +1,20 @@
-// window.onload = function() {
-//   createLabel("Website");
-//   let container = document.getElementById('chart');
-//   drawChart(container);
-//   // addGraphDeleteButton();
-// };
-
 function addFormElements() {
-  // createLabel("Website");
-  // createInput();
+  let container = document.getElementById('data_chart_container');
+  let childDiv = document.createElement("div");
+  container.append(childDiv);
 
-  // createLabel("Port");
-  // createInput();
-
-  createLabel("Website");
-  createLabel("Uptime");
-  createLabel("Metering");
-  createLineGraph();
-  addGraphDeleteButton();
-  // createLabel("Website");
+  createLabel("Website", childDiv);
+  createLabel("Uptime", childDiv);
+  createLabel("Metering", childDiv);
+  createLineGraph(childDiv);
+  addGraphDeleteButton(childDiv);
 }
 
-function createLabel(labelText) {
-  let container = document.getElementById('data_chart_container');
+function createLabel(labelText, childDiv) {
   let webAddressLabel = document.createElement("label");
   webAddressLabel.innerHTML = labelText;
-  container.append(webAddressLabel);
+  childDiv.append(webAddressLabel);
 }
-
-// function createInput() {
-//   let container = document.getElementById('website_form');
-//   let webAddressInput = document.createElement("input");
-//   webAddressInput.setAttribute("type", "text");
-//   container.append(webAddressInput);
-// }
 
 function startTest() {
   let userInputArr = getUserInput();
@@ -106,22 +88,24 @@ function drawChart(container) {
     });
 }
 
-function addGraphDeleteButton() {
-  let container = document.getElementById('data_chart_container');
-
+function addGraphDeleteButton(childDiv) {
   let deleteButton = document.createElement("button");
   deleteButton.textContent = "Remove";
-  container.append(deleteButton);
+  deleteButton.onclick = function(element) {
+    removeElement(element);
+  }
+  childDiv.append(deleteButton);
 }
 
-function createLineGraph() {
-  let container = document.getElementById('data_chart_container');
-
-  let chartDiv = document.createElement("div");
-  container.append(chartDiv);
-
+function createLineGraph(childDiv) {
   let chartCanvas = document.createElement("canvas");
-  chartDiv.append(chartCanvas);
+  childDiv.append(chartCanvas);
 
   drawChart(chartCanvas);
+}
+
+function removeElement(element) {
+  let target = element.target;
+  let parentDiv = target.parentElement;
+  parentDiv.remove(target);
 }
