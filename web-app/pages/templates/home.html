@@ -4,24 +4,26 @@
     <head>
         <link rel="stylesheet" href="/static/css/styles.css">
         <script src = "/static/js/button_manager.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@2.0.0"></script>
     </head>
     <body>
         <div class = "row">
-            <div class = "column" id = "user_input">
-                <form>
-                    <label> Request Period (seconds) </label>
-                    <input>
-                    <label> Uptime Interval (minutes) </label>
-                    <input>
-                </form>
-            
+            <div class = "column" id = "user_input">           
                 <form id = "website_form">
-                    <label> Website </label>
-                    <input>
-        
-                    <label> Port </label>
-                    <input>                    
+                  <label> Request Period (seconds) </label>
+                  <input>
+                  
+                  <label> Uptime Interval (minutes) </label>
+                  <input>
+                  
+                  <label> Website </label>
+                  <input>
+      
+                  <label> Port </label>
+                  <input>                    
                 </form>
 
                 <button onclick="addFormElements()"> + </button>
