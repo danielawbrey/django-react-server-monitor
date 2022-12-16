@@ -5,7 +5,15 @@ function setChartStatus(boolVal) {
   for(let i = 0; i < chartArr.length; i++) {
     chartArr[i].options.plugins.streaming.pause = boolVal;
   }
-  // chart.options.plugins.streaming.pause = boolVal;
+}
+
+function takeScreenshot() {
+  html2canvas(document.body).then((canvas) => {
+    let a = document.createElement("a");
+    a.download = "ss.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  });
 }
 
 function addFormElements() {
@@ -16,10 +24,10 @@ function addFormElements() {
   document.getElementById("start_test_button").disabled = false;
 
   let userInput = getUserInput();
-
-  createLabel("Server Address", childDiv);
-  createLabel("Uptime", childDiv);
-  createLabel("Metering", childDiv);
+  
+  createLabel(`Server Address: ${userInput[2]}:${userInput[3]}`, childDiv);
+  createLabel(`Uptime`, childDiv);
+  createLabel(`Metering for ${userInput[1]} minutes`, childDiv);
   // createTable("Metering", userInput[0], childDiv);
   createLineGraph(childDiv);
   addGraphDeleteButton(childDiv);
@@ -59,6 +67,7 @@ function startTest() {
 
 function stopTest() {
   setChartStatus(true);
+  // takeScreenshot();
   document.getElementById("start_test_button").disabled = false;
   document.getElementById("stop_test_button").disabled = true;
 }
@@ -67,19 +76,56 @@ function getUserInput() {
   let userInput = [];
   let container = document.getElementById('website_form');
   for (let i = 0; i < container.length; i++) {
-    userInput.push(container.elements[i].value)
+    userInput.push(container.elements[i].value);
   }
   return userInput;
 }
 
+function computeLatency() {
+  let startTime = new Date();
+  let statusCode = httpGetAsync();
+  let stopTime = new Date();
+
+  colorDataPoints(statusCode);
+
+  return stopTime.getTime() - startTime.getTime();
+}
+
+function colorDataPoints(statusCode) {
+  const successfulHTTPResponseCode = 200;
+  let bgColor = chart.data.datasets[0].pointBackgroundColor;
+  let bColor = chart.data.datasets[0].pointBorderColor;
+
+  if(statusCode != successfulHTTPResponseCode) {
+    // bgColor = "#9e0f02";
+    bgColor.push("#9e0f02");
+    bColor.push("#9e0f02");
+  }
+  else {
+    // bgColor = "#067800";
+    bgColor.push('#067800');
+    bColor.push('#067800');
+  }
+}
+
 function httpGetAsync() {
   let xmlHttp = new XMLHttpRequest();
-  xmlHttp.onreadystatechange = function() {
-    if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-        console.log(xmlHttp.status);
-    }
-  }
   xmlHttp.open("GET", "http://127.0.0.1:8002", false);
+  // xmlHttp.timeout = 500;
+
+  // xmlHttp.ontimeout = function() {
+  //   console.log('Timeout');
+  // }
+
+  xmlHttp.onerror = function() {
+    console.log("Something went wrong");
+  }
+
+  let promise = new Promise((res, rej) => {
+    setTimeout(() => res("Now it's done!"), 1000)
+})
+
+  
   xmlHttp.send(null);
   return xmlHttp.status;
 }
@@ -92,8 +138,10 @@ function drawChart(container) {
       datasets: [{
         data: [],
         label: "HTTP Status Codes",
-        backgroundColor: "#e755ba",
-        borderColor: "#e755ba",             // empty at the beginning
+        backgroundColor: "#ffffff",
+        borderColor: "#ffffff",
+        pointBackgroundColor: ["#ffffff"],
+        pointBorderColor: ["#ffffff"],           // empty at the beginning
       }]
     },
     options: {
@@ -112,7 +160,7 @@ function drawChart(container) {
               chart.data.datasets.forEach(function(dataset) {
                 dataset.data.push({
                   x: Date.now(),
-                  y: httpGetAsync()
+                  y: computeLatency()
                 });
               });
             }
@@ -141,6 +189,7 @@ function createLineGraph(childDiv) {
 }
 
 function removeElement(element) {
+  setChartStatus(true);
   let target = element.target;
   let parentDiv = target.parentElement;
   parentDiv.remove(target);
