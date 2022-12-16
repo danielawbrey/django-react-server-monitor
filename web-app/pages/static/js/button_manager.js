@@ -1,13 +1,11 @@
 let chart = NaN;
-let pauseData = true;
+let chartArr = [];
 
 function setChartStatus(boolVal) {
-  // pauseData = boolVal;
-  chart.options.plugins.streaming.pause = boolVal;
-}
-
-function getChartStatus() {
-  return pauseData;
+  for(let i = 0; i < chartArr.length; i++) {
+    chartArr[i].options.plugins.streaming.pause = boolVal;
+  }
+  // chart.options.plugins.streaming.pause = boolVal;
 }
 
 function addFormElements() {
@@ -60,7 +58,6 @@ function startTest() {
 }
 
 function stopTest() {
-  // pauseData = true;
   setChartStatus(true);
   document.getElementById("start_test_button").disabled = false;
   document.getElementById("stop_test_button").disabled = true;
@@ -103,7 +100,7 @@ function drawChart(container) {
       plugins: {
         streaming: {
           duration: 2000,
-          pause: getChartStatus(),
+          pause: true,
         }
       },
       scales: {
@@ -124,6 +121,8 @@ function drawChart(container) {
       },
     }
   });
+
+  chartArr.push(chart);
 }
 
 function addGraphDeleteButton(childDiv) {
