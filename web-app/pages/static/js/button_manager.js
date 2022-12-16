@@ -1,9 +1,21 @@
 let chart = NaN;
+let pauseData = true;
+
+function setChartStatus(boolVal) {
+  // pauseData = boolVal;
+  chart.options.plugins.streaming.pause = boolVal;
+}
+
+function getChartStatus() {
+  return pauseData;
+}
 
 function addFormElements() {
   let container = document.getElementById('data_chart_container');
   let childDiv = document.createElement("div");
   container.append(childDiv);
+
+  document.getElementById("start_test_button").disabled = false;
 
   let userInput = getUserInput();
 
@@ -13,10 +25,6 @@ function addFormElements() {
   // createTable("Metering", userInput[0], childDiv);
   createLineGraph(childDiv);
   addGraphDeleteButton(childDiv);
-}
-
-function onrefresh() {
-  console.log("Refresh");
 }
 
 function createTable(labelText, labelData, childDiv) {
@@ -45,8 +53,17 @@ function createLabel(labelText, childDiv) {
 function startTest() {
   let userInputArr = getUserInput();
   console.log(userInputArr);
-  // console.log(parseUserInput(userInputArr));
-  httpGetAsync();
+  setChartStatus(false);
+  // httpGetAsync();
+  document.getElementById("start_test_button").disabled = true;
+  document.getElementById("stop_test_button").disabled = false;
+}
+
+function stopTest() {
+  // pauseData = true;
+  setChartStatus(true);
+  document.getElementById("start_test_button").disabled = false;
+  document.getElementById("stop_test_button").disabled = true;
 }
 
 function getUserInput() {
@@ -62,23 +79,31 @@ function httpGetAsync() {
   let xmlHttp = new XMLHttpRequest();
   xmlHttp.onreadystatechange = function() {
     if (xmlHttp.readyState == XMLHttpRequest.DONE) {
-        alert(xmlHttp.status);
-        plotData();
+        console.log(xmlHttp.status);
     }
   }
   xmlHttp.open("GET", "http://127.0.0.1:8002", false);
   xmlHttp.send(null);
-  return xmlHttp.responseText;
+  return xmlHttp.status;
 }
 
 function drawChart(container) {
   container.height = 50;
   chart = new Chart(container, {
     type: 'line',
+    data: {
+      datasets: [{
+        data: [],
+        label: "HTTP Status Codes",
+        backgroundColor: "#e755ba",
+        borderColor: "#e755ba",             // empty at the beginning
+      }]
+    },
     options: {
       plugins: {
         streaming: {
-          duration: 2000
+          duration: 2000,
+          pause: getChartStatus(),
         }
       },
       scales: {
@@ -87,7 +112,12 @@ function drawChart(container) {
           realtime: {
             duration: 10000,
             onRefresh: function(chart) {
-                console.log('Refresh');
+              chart.data.datasets.forEach(function(dataset) {
+                dataset.data.push({
+                  x: Date.now(),
+                  y: httpGetAsync()
+                });
+              });
             }
           },
         }

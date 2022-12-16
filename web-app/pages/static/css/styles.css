@@ -34,9 +34,24 @@ input {
   display: block;
 }
 
-button {
+/* button {
   min-width: 100%;
   display: block;
+} */
+
+#start_test_button {
+  min-width: 50%;
+  float: left;
+}
+
+#add_chart_button {
+  min-width: 100%;
+  float: right;
+}
+
+#stop_test_button {
+  min-width: 50%;
+  float: right;
 }
 
 #data_chart_container label {
