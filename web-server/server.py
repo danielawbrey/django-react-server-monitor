@@ -22,9 +22,7 @@ def run(PORT, server_class=server.HTTPServer, handler_class=Request_Handler):
 if __name__ == "__main__":
     if(len(sys.argv) > 1):
         PORT = int(sys.argv[1])
-        DURATION = int(sys.argv[2])
     else:
         PORT = 8001
-        DURATION = 5000
 
     run(PORT)
