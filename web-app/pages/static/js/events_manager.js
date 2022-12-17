@@ -1,10 +1,17 @@
 let chartArr = [];
+let timeout = NaN;
+let testRunning = false;
 
 class ServerChart {
   constructor(serverAddress, meteringTime) {
     this.serverAddress = serverAddress;
     this.meteringTime = meteringTime;
+    this.uptime = 0;
     this.chart = NaN;
+    this.positiveResponse = 0;
+    this.negativeResponse = 0;
+    this.startTime = NaN;
+    this.stopTime = NaN;
   }
 
   colorDataPoints(statusCode) {
@@ -13,14 +20,17 @@ class ServerChart {
     let bColor = this.chart.data.datasets[0].pointBorderColor;
   
     if(statusCode != successfulHTTPResponseCode) {
+      this.negativeResponse++;
       bgColor.push("#9e0f02");
       bColor.push("#9e0f02");
     }
     else {
-      // bgColor = "#067800";
+      this.positiveResponse++;
       bgColor.push('#067800');
       bColor.push('#067800');
     }
+
+    this.uptime = (this.positiveResponse / (this.positiveResponse + this.negativeResponse)).toFixed(3);
   }
 
   httpGetAsync() {
@@ -36,11 +46,15 @@ class ServerChart {
   }
 
   computeLatency() {
-    let startTime = new Date();
+    this.startTime = new Date();
     this.colorDataPoints(this.httpGetAsync());
     let stopTime = new Date();
 
-    return stopTime.getTime() - startTime.getTime();
+    let currentTime = new Date();
+
+    document.getElementById("uptime_label").innerHTML = `Uptime: ${this.uptime} over ${(currentTime - this.startTime) * 60000 } minutes`;
+
+    return stopTime.getTime() - this.startTime.getTime();
   }
 
   setChartStatus(boolVal) {
@@ -80,22 +94,14 @@ class ServerChart {
             realtime: {
               duration: 10000,
               onRefresh: chart => {
-                this.computeLatency();
+                let latency = this.computeLatency();
                 chart.data.datasets.forEach(dataset => {
                   dataset.data.push({
                     x: Date.now(),
-                    y: Math.random()
+                    y: latency
                   });
                 });
               }
-              // onRefresh: function refresh(chart) {
-              //   chart.data.datasets.forEach(function(dataset) {
-              //     dataset.data.push({
-              //       x: Date.now(),
-              //       y: Math.random()
-              //     });
-              //   });
-              // }
             },
           }
         },
@@ -108,8 +114,6 @@ function addChart() {
   let container = document.getElementById('data_chart_container');
   let childDiv = document.createElement("div");
   container.append(childDiv);
-
-  // document.getElementById("start_test_button").disabled = false;
 
   let userInput = getUserInput();
 
@@ -141,13 +145,14 @@ function getUserInput() {
 }
 
 function createLabel(labelText, label_id, childDiv) {
-  let webAddressLabel = document.createElement("label");
-  webAddressLabel.setAttribute('id', label_id);
-  webAddressLabel.innerHTML = labelText;
-  childDiv.append(webAddressLabel);
+  let label = document.createElement("label");
+  label.setAttribute('id', label_id);
+  label.innerHTML = labelText;
+  childDiv.append(label);
 }
 
 function startTest() {
+  testRunning = true;
   let userInputArr = getUserInput();
   console.log(userInputArr);
   
@@ -158,7 +163,7 @@ function startTest() {
   document.getElementById("start_test_button").disabled = true;
   document.getElementById("stop_test_button").disabled = false;
 
-  setTimeout(function() { takeScreenshot(); }, 300000);
+  timeout = setTimeout(function() { takeScreenshot(); }, 300000);
 }
 
 function stopTest() {
@@ -167,6 +172,7 @@ function stopTest() {
   }
   document.getElementById("start_test_button").disabled = false;
   document.getElementById("stop_test_button").disabled = true;
+  clearTimeout(timeout);
 }
 
 function takeScreenshot() {
