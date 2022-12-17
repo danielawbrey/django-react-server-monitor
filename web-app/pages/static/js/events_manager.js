@@ -1,6 +1,7 @@
 let chartArr = [];
 let timeout = NaN;
 let testRunning = false;
+let idCounter = 0;
 
 class ServerChart {
   constructor(serverAddress, meteringTime) {
@@ -51,8 +52,6 @@ class ServerChart {
     let stopTime = new Date();
 
     let currentTime = new Date();
-
-    document.getElementById("uptime_label").innerHTML = `Uptime: ${this.uptime} over ${(currentTime - this.startTime) * 60000 } minutes`;
 
     return stopTime.getTime() - this.startTime.getTime();
   }
@@ -110,18 +109,27 @@ class ServerChart {
   }
 };
 
+function updateUptime() {
+  let currentTime = new Date();
+  for(let i = 0; i < chartArr.length; i++) {
+    let label = document.getElementById(`uptime_label_${i+1}`);
+    label.innerHTML =  `Uptime: ${chartArr[i].uptime} over ${(currentTime.getTime() - chartArr[i].startTime.getTime())/60000} minutes`
+    currentTime = new Date();
+  }
+}
+
 function addChart() {
+  idCounter++;
   let container = document.getElementById('data_chart_container');
   let childDiv = document.createElement("div");
   container.append(childDiv);
 
   let userInput = getUserInput();
 
+  createLabel(`Server Address: ${userInput[2]}:${userInput[3]}`, `server_address_label_${idCounter}`, childDiv);
+  createLabel(`Uptime`, `uptime_label_${idCounter}`, childDiv);
+  createLabel(`Metering for ${userInput[1]} minutes`, `metering_time_label_${idCounter}`, childDiv);
   chartArr.push(new ServerChart(`${userInput[2]}:${userInput[3]}`, userInput[1]));
-  
-  createLabel(`Server Address: ${userInput[2]}:${userInput[3]}`, 'server_address_label', childDiv);
-  createLabel(`Uptime`, 'uptime_label', childDiv);
-  createLabel(`Metering for ${userInput[1]} minutes`, 'metering_time_label', childDiv);
   chartArr[chartArr.length-1].createLineGraph(childDiv);
   addGraphDeleteButton(childDiv);
 }
@@ -164,6 +172,7 @@ function startTest() {
   document.getElementById("stop_test_button").disabled = false;
 
   timeout = setTimeout(function() { takeScreenshot(); }, 300000);
+  setTimeout(function() { updateUptime() }, 10);
 }
 
 function stopTest() {
