@@ -3,7 +3,8 @@ let timeout = NaN;
 let idCounter = 0;
 
 class ServerChart {
-  constructor(serverAddress, meteringTime) {
+  constructor(serverAddress, meteringTime, interval) {
+    this.interval = interval;
     this.serverAddress = serverAddress;
     this.meteringTime = meteringTime;
     this.uptime = 0;
@@ -82,7 +83,7 @@ class ServerChart {
       options: {
         plugins: {
           streaming: {
-            duration: 2000,
+            duration: parseInt(this.interval,10)*1000,
             pause: true,
           }
         },
@@ -128,7 +129,7 @@ function addChart() {
   createLabel(`Server Address: ${userInput[2]}:${userInput[3]}`, `server_address_label_${idCounter}`, childDiv);
   createLabel(`Uptime`, `uptime_label_${idCounter}`, childDiv);
   createLabel(`Metering for ${userInput[1]} minutes`, `metering_time_label_${idCounter}`, childDiv);
-  chartArr.push(new ServerChart(`${userInput[2]}:${userInput[3]}`, userInput[1]));
+  chartArr.push(new ServerChart(`${userInput[2]}:${userInput[3]}`, userInput[1], userInput[0]));
   chartArr[chartArr.length-1].createLineGraph(childDiv);
   addGraphDeleteButton(childDiv);
 }

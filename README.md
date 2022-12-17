@@ -6,4 +6,4 @@
 
 # Open a second terminal
 # cd web-server
-# Python server.py [server port]
+# Python server.py [server port] [uptime percentage]
