@@ -1,0 +1,39 @@
+{% load static %}
+
+<html>
+    <head>
+        <link rel="stylesheet" href="/static/css/styles.css">
+        <script src = "/static/js/events_manager.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.3.2"></script>
+        <script src="https://cdn.jsdelivr.net/npm/luxon@1.27.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@^1"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-streaming@2.0.0"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-rc.5/dist/html2canvas.min.js"></script>
+    </head>
+    <body>
+        <div class = "row">
+            <div class = "column" id = "user_input">           
+                <form id = "website_form">
+                  <label> Request Period (seconds) </label>
+                  <input>
+                  
+                  <label> Uptime Interval (minutes) </label>
+                  <input>
+                  
+                  <label> Website </label>
+                  <input>
+      
+                  <label> Port </label>
+                  <input>                    
+                </form>
+
+                <button id = "add_chart_button" onclick="addChart()"> + </button>
+                <button id = "start_test_button" onclick="startTest()"> Start </button>
+                <button id = "stop_test_button" onclick="stopTest()" disabled> Stop </button>
+            </div>
+
+            <div class = "column" id = "data_chart_container">
+            </div>
+        </div>
+    </body>
+</html>

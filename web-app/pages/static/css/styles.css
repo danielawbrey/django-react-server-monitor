@@ -1,0 +1,62 @@
+body {
+  min-width: 100%;
+  display: block;
+  color: rgb(255, 255, 255);
+}
+
+.row {
+  min-width: 100%;
+  display: flex;
+}
+
+.column {
+  flex: 1;
+}
+
+#data_chart_container {
+  background-color: rgb(43, 43, 43);
+  max-width: 60%;
+  padding: 1%;
+}
+
+#user_input {
+  background-color: rgb(43, 43, 43);
+  max-width: 40%;
+  padding: 1%;
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  min-width: 100%;
+  display: block;
+}
+
+/* button {
+  min-width: 100%;
+  display: block;
+} */
+
+#start_test_button {
+  min-width: 50%;
+  float: left;
+}
+
+#add_chart_button {
+  min-width: 100%;
+  float: right;
+}
+
+#stop_test_button {
+  min-width: 50%;
+  float: right;
+}
+
+#data_chart_container label {
+  display: block;
+  width: 33%;
+  float: left;
+  text-align: center;
+}
