@@ -1,6 +1,5 @@
 let chartArr = [];
 let timeout = NaN;
-let testRunning = false;
 let idCounter = 0;
 
 class ServerChart {
