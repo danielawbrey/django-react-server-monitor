@@ -7,7 +7,6 @@ class Request_Handler(server.BaseHTTPRequestHandler):
         response_code = 500
         self.send_response(response_code)
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Credentials', True)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
 

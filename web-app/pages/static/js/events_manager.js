@@ -1,5 +1,6 @@
 let chart = NaN;
 let chartArr = [];
+let timeout = NaN;
 
 function setChartStatus(boolVal) {
   for(let i = 0; i < chartArr.length; i++) {
@@ -28,26 +29,8 @@ function addFormElements() {
   createLabel(`Server Address: ${userInput[2]}:${userInput[3]}`, childDiv);
   createLabel(`Uptime`, childDiv);
   createLabel(`Metering for ${userInput[1]} minutes`, childDiv);
-  // createTable("Metering", userInput[0], childDiv);
   createLineGraph(childDiv);
   addGraphDeleteButton(childDiv);
-}
-
-function createTable(labelText, labelData, childDiv) {
-  let webAddressLabel = document.createElement("table");
-
-  let header = webAddressLabel.createTHead();
-  let row = header.insertRow(0);
-
-  let cell = NaN;
-
-  let headerArr = ["Server Address", "Uptime", "Metering"];
-  for(let i = 0; i < 3; i++) {
-    cell = row.insertCell();
-    cell.innerHTML = headerArr[i];
-  }
-
-  childDiv.append(webAddressLabel);
 }
 
 function createLabel(labelText, childDiv) {
@@ -60,9 +43,9 @@ function startTest() {
   let userInputArr = getUserInput();
   console.log(userInputArr);
   setChartStatus(false);
-  // httpGetAsync();
   document.getElementById("start_test_button").disabled = true;
   document.getElementById("stop_test_button").disabled = false;
+  setTimeout(function() { takeScreenshot(); }, 300000);
 }
 
 function stopTest() {
@@ -70,6 +53,7 @@ function stopTest() {
   // takeScreenshot();
   document.getElementById("start_test_button").disabled = false;
   document.getElementById("stop_test_button").disabled = true;
+  clearTimeout(timeout);
 }
 
 function getUserInput() {
@@ -97,12 +81,10 @@ function colorDataPoints(statusCode) {
   let bColor = chart.data.datasets[0].pointBorderColor;
 
   if(statusCode != successfulHTTPResponseCode) {
-    // bgColor = "#9e0f02";
     bgColor.push("#9e0f02");
     bColor.push("#9e0f02");
   }
   else {
-    // bgColor = "#067800";
     bgColor.push('#067800');
     bColor.push('#067800');
   }
@@ -111,21 +93,7 @@ function colorDataPoints(statusCode) {
 function httpGetAsync() {
   let xmlHttp = new XMLHttpRequest();
   xmlHttp.open("GET", "http://127.0.0.1:8002", false);
-  // xmlHttp.timeout = 500;
 
-  // xmlHttp.ontimeout = function() {
-  //   console.log('Timeout');
-  // }
-
-  xmlHttp.onerror = function() {
-    console.log("Something went wrong");
-  }
-
-  let promise = new Promise((res, rej) => {
-    setTimeout(() => res("Now it's done!"), 1000)
-})
-
-  
   xmlHttp.send(null);
   return xmlHttp.status;
 }
@@ -141,7 +109,7 @@ function drawChart(container) {
         backgroundColor: "#ffffff",
         borderColor: "#ffffff",
         pointBackgroundColor: ["#ffffff"],
-        pointBorderColor: ["#ffffff"],           // empty at the beginning
+        pointBorderColor: ["#ffffff"],          // empty at the beginning
       }]
     },
     options: {
