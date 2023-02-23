@@ -1,5 +1,4 @@
 import http.server as server
-import socketserver
 import sys
 
 class Request_Handler(server.BaseHTTPRequestHandler):
@@ -11,6 +10,15 @@ class Request_Handler(server.BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_GET(self):
+        self._set_response()
+
+    def do_POST(self):
+        self._set_response()
+
+    def do_PUT(self):
+        self._set_response()
+
+    def do_DELETE(self):
         self._set_response()
 
 def run(PORT, server_class=server.HTTPServer, handler_class=Request_Handler):
@@ -25,6 +33,6 @@ if __name__ == "__main__":
         UPTIME = int(sys.argv[2])
     else:
         PORT = 8001
-        UPTIME = 0.75
+        UPTIME = 75
 
     run(PORT)
