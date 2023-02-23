@@ -27,8 +27,7 @@ input {
 /* ----- Individual element styling ----- */
 
 #data_chart_container {
-  background-color: rgb(84, 84, 84);
-  /* border: 1px solid red; */
+  background-color: rgb(34, 34, 34);
   max-width: 60%;
   padding: 1%;
 }

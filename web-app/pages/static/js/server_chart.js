@@ -5,7 +5,6 @@ export default class ServerChart {
     this.interval = interval;
     this.serverAddress = serverAddress;
     this.meteringTime = meteringTime;
-    this.uptime = 0;
     this.chart = NaN;
     this.positiveResponse = 0;
     this.negativeResponse = 0;
@@ -24,23 +23,24 @@ export default class ServerChart {
       bgColor.push("#9e0f02");
       bColor.push("#9e0f02");
     }
+
     else {
       this.positiveResponse++;
       bgColor.push('#067800');
       bColor.push('#067800');
     }
+  }
 
-    this.uptime = (this.positiveResponse / (this.positiveResponse + this.negativeResponse)).toFixed(3);
+  get getUptime() {
+    return (this.positiveResponse / (this.positiveResponse + this.negativeResponse)).toFixed(3);
   }
 
   httpGetAsync() {
     let xmlHttp = new XMLHttpRequest();
     xmlHttp.open("GET", this.serverAddress, false);
-  
     xmlHttp.onerror = function() {
       console.log("Something went wrong");
     }
-  
     xmlHttp.send(null);
     return xmlHttp.status;
   }
@@ -49,9 +49,6 @@ export default class ServerChart {
     this.startTime = new Date();
     this.colorDataPoints(this.httpGetAsync());
     let stopTime = new Date();
-
-    let currentTime = new Date();
-
     return stopTime.getTime() - this.startTime.getTime();
   }
 
